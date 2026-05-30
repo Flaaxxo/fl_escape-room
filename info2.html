@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>INFO 2</title>
+    <link href="https://fonts.cdnfonts.com/css/calculator" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style_game.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="--sfondo-ambientale: url('img/info2.png')">
+    
+    <div id="btn_back_room" onclick="torna_a_info1()" title="Torna indietro">
+        <i class="fa-solid fa-door-open"></i>
+    </div>
+
+    <img id="cursore_fantasma" src="" alt="Oggetto in mano">
+    
+    <div id="transizione_nera"></div>
+    <div id="wallpaper_sfocato" style="background-image: url('img/info2.png');"></div>
+    <div id="ui_timer_box">WIPE: <span id="timer_display">--:--</span></div>
+    
+    <div id="btn_inventory" onclick="toggle_inventory()">Inventario [I]</div>
+    <div id="inventory_list"><h3>OGGETTI:</h3><div id="lista_codici"></div></div>
+
+    <div id="scena_gioco">
+        <img src="img/info2.png" class="bg_base">
+
+        <img src="img/cassetto.png" id="spot_cassetto" class="hotspot" 
+             style="top:38%; left:63%; width:10%;" onclick="apri_cassetto()">
+
+        <img src="img/pc_info2.png" id="spot_pc_target" class="hotspot"
+             style="top:53%; left:14%; width:20%;" onclick="tenta_uso_pc()">
+             
+        <img src="img/lavagna_digitale.png" id="spot_lavagna" class="hotspot inattivo" 
+             style="top:19%; left:61%; width:23%;" onclick="apri_modale('m_lavagna')">
+
+        <img src="img/armadietto_info2.png" id="spot_armadio" class="hotspot inattivo" 
+             style="top:33%; right:11%; width:9%;" onclick="apri_tastierino_img()">
+
+        <img src="img/porta_info2.png" id="spot_uscita" class="hotspot bloccato"
+             style="top:27%; right:-2%; width:11%; opacity:0;" 
+             onclick="vai_a_info3()">
+
+        <!--
+            FOGLIO CODICE e FOGLI: sono drag-and-drop come gli elementi del cassetto.
+            Vengono messi DENTRO #scena_gioco con posizione % relativa al background,
+            esattamente come tutti gli altri hotspot.
+            La posizione iniziale è fissa rispetto all'immagine di sfondo.
+            Il drag usa il container #scena_gioco come riferimento (stessa logica del cassetto).
+        -->
+        <img src="img/foglio_codice.png" id="foglio_codice" class="golden_paper" 
+             style="top:71%; left:19%; width:10%; z-index:19;" 
+             onclick="trova_codice_segreto()"
+             onmousedown="inizia_drag_scena(event, this)">
+
+        <img src="img/fogli.png" id="fogli_carta" class="paper_stealth" 
+             style="top:66%; left:15%; width:19%; z-index:20;" 
+             onmousedown="inizia_drag_scena(event, this)">
+    </div>
+
+    <div id="m_cassetto_aperto" class="modal_overlay nascosto">
+        <div class="modal_cassetto_container" id="area_cassetto">
+            <button class="btn_action" style="position:absolute; top:10px; right:10px; background:black; z-index:100;" onclick="chiudi_cassetto()">CHIUDI X</button>
+            
+            <img src="img/special_usb.png" id="usb_target" class="item_draggable" style="top:45%; left:45%; width:40px; z-index:1;" onmousedown="inizia_drag(event, this)" ondblclick="prendi_usb()">
+            
+            <img src="img/calcolatrice_cassetto.png" class="item_draggable" style="top:44%; left:40%; width:150px; z-index:10;" onmousedown="inizia_drag(event, this)">
+            <img src="img/usb.png" class="item_draggable usb_finta" style="top:30%; left:25%; transform:rotate(45deg);" onmousedown="inizia_drag(event, this)">
+            <img src="img/usb.png" class="item_draggable usb_finta" style="top:60%; left:30%; transform:rotate(-30deg);" onmousedown="inizia_drag(event, this)">
+            <img src="img/usb.png" class="item_draggable usb_finta" style="top:55%; left:70%; transform:rotate(90deg);" onmousedown="inizia_drag(event, this)">
+            <img src="img/usb.png" class="item_draggable usb_finta" style="top:25%; left:65%; transform:rotate(120deg);" onmousedown="inizia_drag(event, this)">
+        </div>
+    </div>
+
+    <div id="m_pc_enigma" class="modal_overlay nascosto">
+        <div class="modal_terminale">
+            <div id="fase_usb_code">
+                <h2>PROTOCOLLO SICUREZZA</h2>
+                <p>Inserire codice di verifica.</p>
+                <p style="color:#aaa;">Hint: "Memoria verificata = ?"</p>
+                <input type="text" id="input_usb_code" placeholder="Codice..."
+                       oninput="this.value = this.value.toUpperCase()">
+                <button class="btn_action" onclick="verifica_usb_code()">VERIFICA ACCESSO</button>
+            </div>
+            
+            <div id="fase_readme" class="nascosto">
+                <h2>ACCESSO CONSENTITO</h2>
+                <div class="file_readme">
+                    <h3>Progetto GENESIS - Log 01</h3>
+                    <p>"Tutto è iniziato con il linguaggio base del Web. Struttura. Fondamenta."</p>
+                    <br><p>Linguaggio:</p>
+                    <div class="input_mask_wrapper">
+                        <div id="display_finto">_ _ _ _</div>
+                        <input type="text" id="input_vero_nascosto" maxlength="4" oninput="aggiorna_fake_input(this)">
+                    </div>
+                    <button class="btn_action" style="color:black; border-color:black; margin-top:10px;" onclick="verifica_readme()">CONFERMA</button>
+                    <p id="pc_feedback" style="color:red; font-size:0.9rem; min-height:1.2em; margin-top:10px;"></p>
+                </div>
+            </div>
+
+            <div id="fase_pc_successo" class="nascosto">
+                <h2 style="color:#0f0;">✓ FILE DECRYPTED</h2>
+                <p>"HyperText Markup Language.<br>Il principio di tutto."</p>
+                <br>
+                <p>Access code fragment: <b>[H]</b></p>
+                <br>
+                <button class="btn_action" onclick="chiudi_pc_completo()">CHIUDI TERMINALE</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="m_lavagna" class="modal_overlay nascosto">
+        <div class="modal_simon" style="max-width:600px;">
+            <h2 style="border-bottom:2px solid #aa00ff; padding-bottom:10px;">NEURAL NETWORK RECONSTRUCTION</h2>
+            <p style="font-size:0.9rem; margin-bottom:15px;">Trascina le lettere nell'ORDINE CORRETTO per formare il cognome del professore:</p>
+            <div class="lavagna_container">
+                <div class="slots_container">
+                    <div class="letter_slot" id="slot_0"></div><div class="letter_slot" id="slot_1"></div><div class="letter_slot" id="slot_2"></div><div class="letter_slot" id="slot_3"></div>
+                    <div class="letter_slot" id="slot_4"></div><div class="letter_slot" id="slot_5"></div><div class="letter_slot" id="slot_6"></div><div class="letter_slot" id="slot_7"></div>
+                </div>
+                <div class="letters_bank" id="bank_letters"></div>
+            </div>
+            <div style="margin-top:20px;">
+                <button class="btn_action" style="background:red; border-color:red;" onclick="reset_lavagna()">RESET</button>
+                <button class="btn_action" onclick="verifica_lavagna()">CONFERMA</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="m_lavagna_successo" class="modal_overlay nascosto">
+        <div class="modal_simon">
+            <h2 style="color:#0f0;">✓ LAST NAME STORED</h2>
+            <p>"Il coordinatore di GENESIS."</p>
+            <br>
+            <p>Access code fragment: <b style="font-size:1.5rem; color:yellow;">[8]</b></p>
+            <br>
+            <button class="btn_action" style="border-color:#fff; color:#fff;" onclick="chiudi_lavagna_completa()">CHIUDI</button>
+        </div>
+    </div>
+
+    <div id="m_tastierino_img" class="modal_overlay nascosto">
+        <div class="modal_img_container">
+            <div class="display_img_overlay" id="display_num_img"></div>
+            
+            <div class="btn_invisible key_pos_1" onclick="img_num_press('1')"></div>
+            <div class="btn_invisible key_pos_2" onclick="img_num_press('2')"></div>
+            <div class="btn_invisible key_pos_3" onclick="img_num_press('3')"></div>
+            <div class="btn_invisible key_pos_4" onclick="img_num_press('4')"></div>
+            <div class="btn_invisible key_pos_5" onclick="img_num_press('5')"></div>
+            <div class="btn_invisible key_pos_6" onclick="img_num_press('6')"></div>
+            <div class="btn_invisible key_pos_7" onclick="img_num_press('7')"></div>
+            <div class="btn_invisible key_pos_8" onclick="img_num_press('8')"></div>
+            <div class="btn_invisible key_pos_9" onclick="img_num_press('9')"></div>
+            <div class="btn_invisible key_pos_0" onclick="img_num_press('0')"></div>
+            
+            <div class="btn_invisible key_pos_back" onclick="img_backspace()"></div> 
+            <div class="btn_invisible key_pos_ce"   onclick="img_clear()"></div>     
+            <div class="btn_invisible key_pos_egg"  onclick="img_easter_egg()"></div> 
+            <div class="btn_invisible key_pos_hint" onclick="apri_hint_carta()"></div> 
+            <div class="btn_invisible key_pos_ok"   onclick="img_check()"></div>        
+        </div>
+    </div>
+
+    <div id="m_hint_paper" class="modal_overlay nascosto">
+        <div class="modal_box modal_carta">
+            <p>Il PIN di accesso è composto da:</p>
+            <p><b>Due numeri ripetuti tre volte.</b></p>
+            <hr style="border-color:black;">
+            <p><i>Indizio:</i> Uno dei due corrisponde alla posizione alfabetica della lettera <b>F</b>.</p>
+            <p>E attenzione!! Uno dei due numeri si ottiene in questa stanza</p>
+            <br>
+            <button class="btn_action" style="color:black; border-color:black;" onclick="document.getElementById('m_hint_paper').classList.add('nascosto')">CHIUDI</button>
+        </div>
+    </div>
+
+    <div id="m_armadio" class="modal_overlay nascosto">
+        <div class="modal_terminale" style="max-width:600px;">
+            <h2 style="text-align:center;">SECURE GENESIS ACCESS</h2>
+            <div class="lcd_screen" id="armadio_display">STATUS: LOCKED<br>PASSWORD REQUIRED:<br>L _ _ B _ N _<br><br></div>
+            <div class="keypad_grid">
+                <button class="key_btn" onclick="tastierino_press('A')">A</button><button class="key_btn" onclick="tastierino_press('B')">B</button><button class="key_btn" onclick="tastierino_press('C')">C</button><button class="key_btn" onclick="tastierino_press('D')">D</button><button class="key_btn" onclick="tastierino_press('E')">E</button><button class="key_btn" onclick="tastierino_press('F')">F</button><button class="key_btn" onclick="tastierino_press('G')">G</button>
+                <button class="key_btn" onclick="tastierino_press('H')">H</button><button class="key_btn" onclick="tastierino_press('I')">I</button><button class="key_btn" onclick="tastierino_press('J')">J</button><button class="key_btn" onclick="tastierino_press('K')">K</button><button class="key_btn" onclick="tastierino_press('L')">L</button><button class="key_btn" onclick="tastierino_press('M')">M</button><button class="key_btn" onclick="tastierino_press('N')">N</button>
+                <button class="key_btn" onclick="tastierino_press('O')">O</button><button class="key_btn" onclick="tastierino_press('P')">P</button><button class="key_btn" onclick="tastierino_press('Q')">Q</button><button class="key_btn" onclick="tastierino_press('R')">R</button><button class="key_btn" onclick="tastierino_press('S')">S</button><button class="key_btn" onclick="tastierino_press('T')">T</button><button class="key_btn" onclick="tastierino_press('U')">U</button>
+                <button class="key_btn" onclick="tastierino_press('V')">V</button><button class="key_btn" onclick="tastierino_press('W')">W</button><button class="key_btn" onclick="tastierino_press('X')">X</button><button class="key_btn" onclick="tastierino_press('Y')">Y</button><button class="key_btn" onclick="tastierino_press('Z')">Z</button>
+                <button class="key_btn key_reset" onclick="tastierino_reset()">CLR</button><button class="key_btn key_action" onclick="tastierino_check()">ENT</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="m_armadio_successo" class="modal_overlay nascosto">
+        <div class="modal_terminale" style="text-align:center;">
+            <h2 style="color:#0f0; font-size:2rem;">✓ ROOM UNLOCKED</h2>
+            <br>
+            <p>Accesso autorizzato. Utente riconosciuto.</p>
+            <p>Network ricostruita. 2/3 completo.</p>
+            <p>Accedi al Core per il finale.</p>
+            <br>
+            <p>Access code fragment: <b style="font-size:2rem; color:yellow;">S</b></p>
+        </div>
+    </div>
+
+    <div id="m_secret_code" class="modal_overlay nascosto">
+        <div class="modal_secret_box">
+            <h2 style="border-bottom:2px solid black; padding-bottom:10px;">⚠ TOP SECRET ⚠</h2>
+            <p>Accesso Elite Garantito.</p>
+            <br>
+            <p>Codice Server GENESIS:</p>
+            <h1 style="font-size:3rem; margin:10px 0;">SUPERUSER</h1>
+            <br>
+            <button class="btn_action" style="color:black; border-color:black;" onclick="chiudi_segreto()">MEMORIZZA & CHIUDI</button>
+        </div>
+    </div>
+
+    <div onclick="reset()" 
+         style="position:fixed; bottom:20px; left:20px; z-index:10000; 
+                background:rgb(59,59,80); color:rgb(155,155,155); 
+                padding:10px 20px; cursor:pointer; font-weight:bold; font-family:sans-serif;
+                box-shadow:0 0 10px black;">
+        <b>↻</b>
+    </div>
+
+    <script src="script/audio.js"></script>
+    <script src="script/core.js"></script>
+    <script src="script/info2.js"></script>
+</body>
+</html>

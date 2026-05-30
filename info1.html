@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>INFO 1</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style_game.css">
+</head>
+<body style="--sfondo-ambientale: url('img/info1.png')">
+    
+    <div onclick="reset()" 
+         style="position:fixed; bottom:20px; left:20px; z-index:10000; 
+                background:rgb(59,59,80); color:rgb(155,155,155); 
+                padding:10px 20px; cursor:pointer; font-weight:bold; font-family:sans-serif;
+                box-shadow:0 0 10px black;">
+        <b>↻</b>
+    </div>
+
+    <div id="transizione_nera"></div>
+
+    <div id="wallpaper_sfocato" style="background-image: url('img/info1.png');"></div>
+
+    <div id="ui_timer_box">WIPE: <span id="timer_display">--:--</span></div>
+    <div id="btn_inventory" onclick="toggle_inventory()">Inventario [I]</div>
+    <div id="inventory_list"><h3>CODICI:</h3><div id="lista_codici"></div></div>
+
+    <div id="scena_gioco">
+        <img src="img/info1.png" class="bg_base">
+
+        <img src="img/pc_info1.png" id="spot_pc" class="hotspot" 
+             style="top:61%; left:73%; width:30%;" onclick="apri_modale('m_pc')">
+
+        <img src="img/foglio.png" id="spot_foglio" class="hotspot" 
+             style="top:60%; left:56%; width:9%;" onclick="apri_modale('m_foglio')">
+
+        <img src="img/telo.png" id="spot_telo" class="hotspot bloccato" 
+             style="top:27%; left:32%; width:33%;" onclick="apri_modale('m_telo')">
+
+        <img src="img/porta_info1.png" id="spot_porta" class="hotspot porta inerte"
+             style="top:33%; left:11%; width:10%;" 
+             onclick="">
+    </div>
+
+    <div id="m_pc" class="modal_overlay nascosto">
+        <div class="modal_box modal_terminale" style="position:relative;">
+            
+            <div class="binary_hint_icon">?</div>
+            <div class="binary_tooltip">
+                7° bit = 64<br>
+                6° bit = 32<br>
+                5° bit = 16<br>
+                4° bit = 8<br>
+                3° bit = 4<br>
+                2° bit = 2<br>
+                1° bit = 1<br>
+                0° bit = 0
+            </div>
+
+            <div class="fase_domanda">
+                <h3>GENESIS BACKUP v2.1</h3>
+                <p>Sector A: 1011 | Sector B: 0101</p>
+                <p>Checksum (decimale): ?</p>
+                <input type="text" id="input_pc" placeholder="Inserisci valore...">
+                <button class="btn_action" onclick="verifica_enigma('input_pc', '16', '16', 'spot_pc', 'm_pc')">CONFERMA</button>
+            </div>
+            
+            <div class="fase_successo nascosto">
+                <h2 style="color:#0f0;">✓ CHECKSUM VERIFIED</h2>
+                <p>"Il primo passo è sempre il più semplice."</p>
+                <br>
+                <p>Access code fragment: [<span class="codice_sbloccato">16</span>]</p>
+                <button class="btn_action" onclick="chiudi_successo_generico('m_pc')">CHIUDI SESSIONE</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="m_foglio" class="modal_overlay nascosto">
+        <div class="modal_box modal_carta">
+            <div class="fase_domanda">
+                <h2>Team GENESIS:</h2>
+                <p>1. Flavio M. (Frontend) | 4. Sofia R. (AI)<br>3. Alessandro T. (Database) | 2. Giulio P. (Backend)</p>
+                <p><i>(AI -> Backend -> Database -> Frontend)</i></p>
+                <input type="text" id="input_foglio" placeholder="Iniziali..." 
+                       oninput="this.value = this.value.toUpperCase()">
+                <button class="btn_action" style="color:black; border-color:black;" onclick="verifica_enigma('input_foglio', 'RPTM', 'RPTM', 'spot_foglio', 'm_foglio')">CONFERMA</button>
+            </div>
+            
+            <div class="fase_successo nascosto">
+                <h2 style="color:green;">✓ TEAM IDENTIFIED</h2>
+                <p>"Bene. Conosci le figure del progetto."</p>
+                <br>
+                <p>Access code fragment: [<span class="codice_sbloccato">RPTM</span>]</p>
+                <button class="btn_action" style="color:black; border-color:black;" onclick="chiudi_successo_generico('m_foglio')">CHIUDI APPUNTI</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="m_telo" class="modal_overlay nascosto">
+        <div class="modal_proiettore">
+            <h2>AUDIO LOCK SYSTEM</h2>
+            <p><b>RILEVATA SERRATURA SONORA</b></p>
+            <br>
+            <p>Il sistema richiede una verifica auditiva.</p>
+            <p>Memorizza la sequenza per sbloccare l'uscita.</p>
+            <button class="btn_proiettore" onclick="avvia_simon_game()">AVVIA SEQUENZA</button>
+        </div>
+    </div>
+
+    <div id="m_simon" class="modal_overlay nascosto">
+        <div class="modal_simon">
+            <h2 style="color:#fff; border-bottom:2px solid #aa00ff; padding-bottom:10px;">AUDIO PROTOCOL</h2>
+            <div id="simon_status">Inizializzazione...</div>
+            
+            <div class="simon_grid" id="simon_grid">
+                <div id="btn_rosso" class="simon_btn btn_rosso" onclick="simon_input('rosso')"></div>
+                <div id="btn_blu" class="simon_btn btn_blu" onclick="simon_input('blu')"></div>
+                <div id="btn_giallo" class="simon_btn btn_giallo" onclick="simon_input('giallo')"></div>
+                <div id="btn_verde" class="simon_btn btn_verde" onclick="simon_input('verde')"></div>
+            </div>
+
+            <div id="simon_vittoria" class="nascosto">
+                <h3 style="color:#ffff00; text-shadow:0 0 10px gold;">ACCESSO AUTORIZZATO</h3>
+                <p>Codice Giallo: <b>[FBBF24]</b></p>
+                <br>
+                <p style="font-style:italic;">"Stanza 1 completata.<br>GENESIS ti osserva. Procedi in INFO 2."</p>
+                <button class="btn_action" style="border-color:#fff; color:#fff; margin-top:20px;" onclick="chiudi_simon_sblocca_porta()">SBLOCCA USCITA</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script/audio.js"></script>
+    <script src="script/core.js"></script>
+    <script src="script/info1.js"></script>
+</body>
+</html>

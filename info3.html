@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>INFO 3 - CORE</title>
+    <link href="https://fonts.cdnfonts.com/css/calculator" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style_game.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="--sfondo-ambientale: url('img/info3.png')">
+
+    <div id="btn_back_room" onclick="torna_a_info2()" title="Torna indietro">
+        <i class="fa-solid fa-door-open"></i>
+    </div>
+
+    <div onclick="reset()" 
+         style="position:fixed; bottom:20px; left:20px; z-index:10000; 
+                background:rgb(59,59,80); color:rgb(155,155,155); 
+                padding:10px 20px; cursor:pointer; font-weight:bold; font-family:sans-serif;
+                box-shadow:0 0 10px black;">
+        <b>↻</b>
+    </div>
+
+    <div id="transizione_nera"></div>
+
+    <div id="wallpaper_sfocato" style="background-image: url('img/info3.png');"></div>
+    <div id="ui_timer_box">WIPE: <span id="timer_display">--:--</span></div>
+
+    <div id="btn_inventory" onclick="toggle_inventory()">Inventario [I]</div>
+    <div id="inventory_list"><h3>OGGETTI:</h3><div id="lista_codici"></div></div>
+
+    <div id="scena_gioco">
+        <img src="img/info3.png" class="bg_base" id="bg_room">
+
+        <img src="img/calcolatrice.png" id="spot_calc" class="hotspot" 
+             style="top:82%; left:47%; width:15%;" onclick="apri_desk_img()">
+        
+        <img src="img/pc_info3.png" id="spot_pc3" class="hotspot" 
+             style="top:36%; left:26%; width:9%;" onclick="apri_modale('m_pc3')">
+        
+        <div class="hotspot_container" 
+             style="position:absolute; top:18%; left:81%; width:8%;"
+             onmouseenter="inizia_timer_tooltip()"
+             onmouseleave="ferma_timer_tooltip()">
+             
+            <img src="img/orologio.png" id="spot_orologio" class="hotspot_no_glow" 
+                 style="width:100%;" onclick="apri_modale('m_orologio')">
+                 
+            <div class="tooltip_container">
+                1337 = LEET in leetspeak. Codice segreto!<br>
+                <i>"Il codice è meno vicino di quanto si possa pensare.."</i>
+            </div>
+        </div>
+        
+        <img src="img/armadietto_info3.png" id="spot_finale" class="hotspot" 
+             style="top:39%; right:0%; width:10%;" onclick="tenta_apertura_finale()">
+    </div>
+
+    <div id="m_calc" class="modal_overlay nascosto">
+        <div class="modal_desk_container">
+            <div class="desk_secret_hint"><p><b><u>hint</u></b>: 16^i = r; r×n = x1; x1+x2...</p><p>A = 10, B = 11, C = 12</p><p>D = 13, E = 14, F = 15</p></div>
+            <div class="calc_screen_overlay" id="calc_disp_img">0</div>
+            
+            <div class="c_btn kb_7" onclick="calc_input('7')"></div> <div class="c_btn kb_8" onclick="calc_input('8')"></div> <div class="c_btn kb_9" onclick="calc_input('9')"></div>
+            <div class="c_btn kb_4" onclick="calc_input('4')"></div> <div class="c_btn kb_5" onclick="calc_input('5')"></div> <div class="c_btn kb_6" onclick="calc_input('6')"></div>
+            <div class="c_btn kb_1" onclick="calc_input('1')"></div> <div class="c_btn kb_2" onclick="calc_input('2')"></div> <div class="c_btn kb_3" onclick="calc_input('3')"></div>
+            <div class="c_btn kb_c" onclick="calc_clear()"></div> <div class="c_btn kb_0" onclick="calc_input('0')"></div> <div class="c_btn kb_plus" onclick="calc_op('+')"></div> <div class="c_btn kb_add" onclick="calc_op('*')"></div>
+            <div class="c_btn kb_eq" onclick="calc_result()"></div>
+
+            <input type="text" id="input_ip_img" class="paper_input_area" value="192.168." placeholder="192.168...">
+            <textarea class="notebook_area" placeholder="Appunti..."></textarea>
+            <div class="btn_ok_img" onclick="verifica_ip_img()"></div>
+        </div>
+    </div>
+
+    <div id="m_successo_ip" class="modal_overlay nascosto">
+        <div class="modal_box modal_carta">
+            <h2 style="color:green; border-bottom:2px solid green;">✓ CONNECTION ESTABLISHED</h2>
+            <p>"Indirizzo IP verificato.<br>Accesso al server GENESIS autorizzato."</p>
+            <br>
+            <p>Access code fragment: <b style="font-size:1.5rem; color:black;">[2647]</b></p>
+            <br>
+            <button class="btn_action" style="color:black; border-color:black;" onclick="chiudi_successo_ip()">CHIUDI</button>
+        </div>
+    </div>
+
+    <div id="m_pc3" class="modal_overlay nascosto">
+        <div class="modal_terminal_cyan">
+            <div id="fase_algo_domanda">
+                <h3 style="border-bottom:1px solid #00ffff; padding-bottom:5px; margin-top:0;">GENESIS CORE – Basic Algorithm</h3>
+                <div class="code_block">vN = [12, 7, 3, 19, 5]
+ris = 0
+for n in vN:
+    if n > 10:
+        ris += n
+print(ris)</div>
+                <p>Output: <input type="text" id="input_algo" placeholder="Inserisci numero..."></p>
+                <p id="feedback_algo" style="color:#ff3333; font-size:0.9rem; min-height:1.2em;"></p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <button class="btn_action_cyan" onclick="verifica_algo()">CONFERMA</button>
+                    <button id="btn_soluzione_algo" class="btn_action_cyan nascosto" style="border-color:yellow; color:yellow; font-size:0.8rem;" onclick="document.getElementById('m_spiegazione_algo').classList.remove('nascosto')">SOLUZIONE (?)</button>
+                </div>
+            </div>
+            <div id="fase_algo_successo" class="nascosto" style="text-align:center;">
+                <h2 style="color:#00ffff; font-size:2rem;">✓ ALGORITHM VERIFIED</h2>
+                <br>
+                <p style="font-style:italic;">"Perfetto. Solo i numeri sopra la soglia.<br>Il filtro è essenziale in programmazione."</p>
+                <br>
+                <p>Access code fragment: <b style="font-size:2rem; color:#fff;">[31]</b></p>
+                <br>
+                <button class="btn_action_cyan" onclick="document.getElementById('m_pc3').classList.add('nascosto')">CHIUDI TERMINALE</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="m_spiegazione_algo" class="modal_overlay nascosto">
+        <div class="modal_box modal_carta" style="font-family:'Times New Roman', serif; color:#000;">
+            <h2>DEBUG LOG</h2>
+            <p>Il codice somma solo i numeri <b>maggiori di 10</b>:</p>
+            <ul style="text-align:left; line-height:1.6;">
+                <li>12 > 10 → <b style="color:green">SI</b> (+12)</li>
+                <li>7 > 10 → <b style="color:red">NO</b></li>
+                <li>3 > 10 → <b style="color:red">NO</b></li>
+                <li>19 > 10 → <b style="color:green">SI</b> (+19)</li>
+                <li>5 > 10 → <b style="color:red">NO</b></li>
+            </ul>
+            <hr style="border-color:#000;">
+            <p style="font-size:1.2rem;"><b>Risultato: 12 + 19 = 31</b></p>
+            <br><button class="btn_action" style="color:black; border-color:black;" onclick="document.getElementById('m_spiegazione_algo').classList.add('nascosto')">CHIUDI</button>
+        </div>
+    </div>
+
+    <div id="m_orologio" class="modal_overlay nascosto">
+        <div class="modal_clock_elite">
+            <h2 class="blink_text" style="color:red;">SYSTEM TIME LOCKED</h2>
+            <br><p>Genesis Boot Time:</p><h1 style="font-size:3rem; margin:10px 0;">13:37</h1>
+            <br><p style="border:1px solid #00ffff; padding:10px; display:inline-block;">ELITE ACCESS REQUIRED</p>
+            <br><br><button class="btn_action_cyan" onclick="document.getElementById('m_orologio').classList.add('nascosto')">CHIUDI</button>
+        </div>
+    </div>
+    
+    <div id="m_finale_lock" class="modal_overlay nascosto">
+        <div class="modal_terminal_cyan" style="text-align:center;">
+            <h2 style="color:red;">🔒 SECURITY LOCK</h2>
+            <p>Inserisci Password Elite:</p>
+            <input type="text" id="input_elite" placeholder="PASSWORD..." style="text-align:center;"
+                   oninput="this.value = this.value.toUpperCase()">
+            <br><button class="btn_action_cyan" onclick="verifica_elite()">UNLOCK</button>
+        </div>
+    </div>
+
+    <div id="m_finale_core" class="modal_overlay nascosto">
+        <div class="modal_final_core">
+            <h2>⚠ GENESIS CORE OVERRIDE ⚠</h2>
+            <p>Sequenza di ripristino manuale richiesta.</p>
+            <p>Inserire i frammenti di codice nell'ordine corretto:</p>
+            <p style="font-size:0.9rem; color:#aaa; margin-top:10px;">[Info1] - [Info2] - [Info3]</p>
+
+            <input type="text" id="input_finale" placeholder="X-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X"
+                   oninput="this.value = this.value.toUpperCase()">
+            <button class="btn_final_action" onclick="verifica_finale()">
+                INITIATE REBOOT
+            </button>
+        </div>
+    </div>
+
+    <script src="script/audio.js"></script>
+    <script src="script/core.js"></script>
+    <script src="script/info3.js"></script>
+</body>
+</html>

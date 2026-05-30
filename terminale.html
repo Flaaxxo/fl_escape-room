@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>GENESIS | Complete</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style_intro.css">
+</head>
+<body class="intro_theme fase_storia">
+
+    <div class="overlay_scuro"></div>
+
+    <div id="story_screen" style="width:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh;">
+        <div id="terminale_output" class="terminale_container" style="text-align:center;"></div>
+        
+        <div id="prompt_space" class="nascosto">[ PREMI SPAZIO PER LE STATISTICHE ]</div>
+    </div>
+
+    <div id="stats_screen" class="nascosto" style="width:100%; height:100vh; display:flex; justify-content:center; align-items:center; position:absolute; top:0; left:0; z-index:100;">
+        
+        <div class="glass_panel_final">
+            <h2>════ MISSIONE COMPLETATA ════</h2>
+            
+            <p style="text-align:center; font-size:0.9rem; margin-bottom:20px;">I.I.S.S. Galileo Ferraris - Acireale<br>GENESIS Protocol: <span style="color:#00aa00">SAVED</span></p>
+            
+            <div class="riga_dati">
+                <p>Tempo totale: <span id="stat_tempo" class="valore">--:--</span></p>
+                <p>Stanze completate: <span class="valore">3/3</span></p>
+                <p>Indizi risolti: <span class="valore">9/9</span></p>
+                <p>Errori commessi: <span id="stat_errori" class="valore_rosso">0</span></p>
+            </div>
+            
+            <div class="rank">
+                <h3 id="rank_title">RANK FINALE: ⭐⭐⭐</h3>
+                <p style="font-style:italic; font-size:0.9rem; color:#555;">"Il Prof. Guzzetta sarebbe orgoglioso di te."</p>
+            </div>
+            
+            <div style="text-align:center; margin-top:30px; display:flex; gap:10px; justify-content:center;">
+                <button class="btn_final" onclick="window.location.href='index.html'">RIGIOCA</button>
+                <button class="btn_share" onclick="alert('Screenshotta questa pagina!')">CONDIVIDI</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script/audio.js"></script>
+    <script src="script/terminale.js"></script>
+</body>
+</html>
